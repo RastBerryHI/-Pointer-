@@ -30,33 +30,34 @@ public class AnimEvemts : MonoBehaviour
     [SerializeField]
     AudioClip[] footSteps3;
 
-    private void Start()
-    {
-        Gun = FindObjectOfType<ProjectileGun>();
-    }
 
     void ReloadEmptyAK() 
     {
+        Gun = FindObjectOfType<ProjectileGun>();
         Gun.audioSource.PlayOneShot(reloads[0]);
     }
 
     void UngearAK() 
     {
+        Gun = FindObjectOfType<ProjectileGun>();
         Gun.audioSource.PlayOneShot(reloads[1]);
     }
 
     void PullInMagAK() 
     {
+        Gun = FindObjectOfType<ProjectileGun>();
         Gun.audioSource.PlayOneShot(reloads[2]);
     }
 
     void LoadBulletAK() 
     {
+        Gun = FindObjectOfType<ProjectileGun>();
         Gun.audioSource.PlayOneShot(reloads[3]);
     }
 
     void StopReload()
     {
+        Gun = FindObjectOfType<ProjectileGun>();
         Gun.currentMagCapacity = Gun.magCapacity;
     }
 

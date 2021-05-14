@@ -48,10 +48,16 @@ public class Movement : MonoBehaviour
     ProjectileGun MainGun;
     [SerializeField]
     GameObject MainGFX;
+    [SerializeField]
+    GameObject AssaultRifleObject;
     [Space]
     [Header("Secondary")]
     [SerializeField]
+    ProjectileGun SecondaryGun;
+    [SerializeField]
     GameObject SecondaryGFX;
+    [SerializeField]
+    GameObject PistolObject;
 
 
     CharacterController controller;
@@ -63,6 +69,10 @@ public class Movement : MonoBehaviour
     float akAimFov = 15f;
     [SerializeField]
     GameObject[] magBullets;
+    [SerializeField]
+    Transform AkCasePosition;
+    [SerializeField]
+    Transform PistolCasePosition;
 
     float v, h, decV, decH;
 
@@ -80,6 +90,8 @@ public class Movement : MonoBehaviour
         decH = h / 4;
 
         controller = GetComponent<CharacterController>();
+        SecondaryGFX.SetActive(false);
+        PistolObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -100,11 +112,12 @@ public class Movement : MonoBehaviour
 
     void AnimateShoot() 
     {
-        if (MainGun.isShoot && !isMelee)
+        if (Guns[0].isShoot && !isMelee)
         {
             anim.Play("Shoot");
         }
-        MainGun.isShoot = false;
+        
+        Guns[0].isShoot = false;
     }
     
     IEnumerator HideRounds(float time) 
@@ -223,21 +236,29 @@ public class Movement : MonoBehaviour
     
     IEnumerator SwitchToSecondary() 
     {
-        yield return new WaitForSeconds(anim.GetCurrentAnimatorStateInfo(0).length - 0.5f);
+        yield return new WaitForSeconds(anim.GetCurrentAnimatorStateInfo(0).length - 5f);
+
         MainGFX.SetActive(false);
         SecondaryGFX.SetActive(true);
-        anim.runtimeAnimatorController = secondaryController;
 
+        AssaultRifleObject.SetActive(false);
+        PistolObject.SetActive(true);
+
+        anim.runtimeAnimatorController = secondaryController;
         isChanged = true;
     }
 
     IEnumerator SwitchToMain()
     {
-        yield return new WaitForSeconds(anim.GetCurrentAnimatorStateInfo(0).length - 0.5f);
+        yield return new WaitForSeconds(0.05f);
+
         MainGFX.SetActive(true);
         SecondaryGFX.SetActive(false);
-        anim.runtimeAnimatorController = mainController;
 
+        AssaultRifleObject.SetActive(true);
+        PistolObject.SetActive(false);
+
+        anim.runtimeAnimatorController = mainController as RuntimeAnimatorController;
         isChanged = false;
     }
 
@@ -247,10 +268,14 @@ public class Movement : MonoBehaviour
         {
             anim.SetBool("isSwitch", true);
             StartCoroutine(SwitchToSecondary());
+            Guns[0] = SecondaryGun;
+            Guns[1] = MainGun;
         }
-        else if(Input.GetKeyDown(KeyCode.Q) && isChanged) 
+        else if (Input.GetKeyDown(KeyCode.Q) && isChanged)
         {
-            anim.SetBool("isSwitchPistol", true);
+            anim.SetBool("isSwitch", true);
+            Guns[1] = SecondaryGun;
+            Guns[0] = MainGun;
             StartCoroutine(SwitchToMain());
         }
     }
@@ -266,7 +291,6 @@ public class Movement : MonoBehaviour
 
         currentController = anim.runtimeAnimatorController;
 
-        AnimateMovement(move);
         controller.Move(velocity * Time.deltaTime);
 
         if(move.magnitude > 0) 
@@ -274,8 +298,10 @@ public class Movement : MonoBehaviour
             AnimEvemts.Footsteps();
         }
 
+       
         AnimateChangeWeapon();
 
+        AnimateMovement(move);
         AnimateAim();
         CheckEmptyness();
         AnimateReload();
