@@ -8,7 +8,7 @@ First person shooter with codename "Pointer"
 
 2. Manual ammo check
 
-![ezgif com-gif-maker (1)](https://user-images.githubusercontent.com/56451598/117995305-e3c11b00-b349-11eb-86ac-0adba67ec731.gif)
+![ezgif com-gif-maker (4)](https://user-images.githubusercontent.com/56451598/118520697-ef925000-b742-11eb-9829-ed33b0d5bb82.gif)
 
 3. Weapon Switching
 
