@@ -74,8 +74,6 @@ public class Movement : MonoBehaviour
     [SerializeField]
     Transform PistolCasePosition;
 
-    float v, h, decV, decH;
-
     [Header("UI")]
     [SerializeField]
     Text AmmoStatus;
@@ -84,11 +82,6 @@ public class Movement : MonoBehaviour
 
     void Start()
     {
-        v = MainGun.vRecoil;
-        h = MainGun.hRecoil;
-        decV = v / 2;
-        decH = h / 4;
-
         controller = GetComponent<CharacterController>();
         SecondaryGFX.SetActive(false);
         PistolObject.SetActive(false);
@@ -132,11 +125,11 @@ public class Movement : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            if (MainGun.currentMagCapacity > 0 && MainGun.currentMagCapacity < MainGun.magCapacity) 
+            if (Guns[0].currentMagCapacity > 0 && Guns[0].currentMagCapacity < Guns[0].magCapacity) 
             {
                 anim.Play("Reload Not Empty");
             }
-            else if(MainGun.currentMagCapacity <= 0) 
+            else if(Guns[0].currentMagCapacity <= 0) 
             {
                 anim.Play("Reload Empty");
             }
@@ -153,28 +146,22 @@ public class Movement : MonoBehaviour
     {
         if (Input.GetMouseButton(1))
         {
-            MainGun.vRecoil = decV;
-            MainGun.hRecoil = decH;
-
             playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, akAimFov, .1f);
             anim.SetBool("isAim", true);
             isAiming = true;
             if (isAiming == true) 
             {
-                if (MainGun.isShoot && !isMelee)
+                if (Guns[0].isShoot && !isMelee)
                 {
                     anim.Play("Aim Fire");
                 }
-                MainGun.isShoot = false;
+                Guns[0].isShoot = false;
             }
         }
         else
         {
-            MainGun.vRecoil = v;
-            MainGun.hRecoil = h;
-
-            playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, baseFov, .1f);
             anim.SetBool("isAim", false);
+            playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, baseFov, .05f);
             isAiming = false;
         }
     }
@@ -217,26 +204,34 @@ public class Movement : MonoBehaviour
 
     void CheckEmptyness() 
     {
-        if (MainGun.currentMagCapacity > MainGun.magCapacity / 2 || isReloaded == false) 
+        switch (Guns[0].name) 
         {
-            magBullets[0].SetActive(true);
-            magBullets[1].SetActive(true);
-        }
-        else if(MainGun.currentMagCapacity <= MainGun.magCapacity / 2 && MainGun.currentMagCapacity > 0)
-        {
-            magBullets[0].SetActive(false);
-            magBullets[1].SetActive(true);
-        }
-        else if(MainGun.currentMagCapacity == 0)
-        {
-            magBullets[0].SetActive(false);
-            magBullets[1].SetActive(false);
+            case "AK":
+                if (MainGun.currentMagCapacity > MainGun.magCapacity / 2 || isReloaded == false)
+                {
+                    magBullets[0].SetActive(true);
+                    magBullets[1].SetActive(true);
+                }
+                else if (MainGun.currentMagCapacity <= MainGun.magCapacity / 2 && MainGun.currentMagCapacity > 0)
+                {
+                    magBullets[0].SetActive(false);
+                    magBullets[1].SetActive(true);
+                }
+                else if (MainGun.currentMagCapacity == 0)
+                {
+                    magBullets[0].SetActive(false);
+                    magBullets[1].SetActive(false);
+                }
+                break;
+            case "Pistol":
+                magBullets[1].SetActive(false);
+                break;
         }
     }
     
     IEnumerator SwitchToSecondary() 
     {
-        yield return new WaitForSeconds(anim.GetCurrentAnimatorStateInfo(0).length - 5f);
+        yield return new WaitForSeconds(0.25f);
 
         MainGFX.SetActive(false);
         SecondaryGFX.SetActive(true);
@@ -250,7 +245,7 @@ public class Movement : MonoBehaviour
 
     IEnumerator SwitchToMain()
     {
-        yield return new WaitForSeconds(0.05f);
+        yield return new WaitForSeconds(0.4f);
 
         MainGFX.SetActive(true);
         SecondaryGFX.SetActive(false);
@@ -266,14 +261,14 @@ public class Movement : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Q) && !isChanged) 
         {
-            anim.SetBool("isSwitch", true);
+            anim.Play("Switch");
             StartCoroutine(SwitchToSecondary());
             Guns[0] = SecondaryGun;
             Guns[1] = MainGun;
         }
         else if (Input.GetKeyDown(KeyCode.Q) && isChanged)
         {
-            anim.SetBool("isSwitch", true);
+            anim.Play("Switch");
             Guns[1] = SecondaryGun;
             Guns[0] = MainGun;
             StartCoroutine(SwitchToMain());
@@ -298,7 +293,6 @@ public class Movement : MonoBehaviour
             AnimEvemts.Footsteps();
         }
 
-       
         AnimateChangeWeapon();
 
         AnimateMovement(move);

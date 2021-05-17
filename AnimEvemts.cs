@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class AnimEvemts : MonoBehaviour
 {
+    [SerializeField]
+    Movement movement;
     ProjectileGun Gun;
     [SerializeField]
     GameObject Mag;
@@ -11,8 +13,13 @@ public class AnimEvemts : MonoBehaviour
     GameObject SpawnPos;
     [SerializeField]
     float MagTimeToLive = 10f;
+
+    [Header("AK")]
     [SerializeField]
     AudioClip[] reloads;
+    [Header("Glock")]
+    [SerializeField]
+    AudioClip[] reloadsGlck;
 
     [SerializeField]
     Grounder grounder;
@@ -30,34 +37,78 @@ public class AnimEvemts : MonoBehaviour
     [SerializeField]
     AudioClip[] footSteps3;
 
+    
 
     void ReloadEmptyAK() 
     {
-        Gun = FindObjectOfType<ProjectileGun>();
+        Gun = movement.Guns[0];
         Gun.audioSource.PlayOneShot(reloads[0]);
+    }
+
+    void ReloadEmptyGlck() 
+    {
+        Gun = movement.Guns[0];
+        Gun.audioSource.PlayOneShot(reloadsGlck[0]);
     }
 
     void UngearAK() 
     {
-        Gun = FindObjectOfType<ProjectileGun>();
+        Gun = movement.Guns[0];
         Gun.audioSource.PlayOneShot(reloads[1]);
+    }
+
+    void UngearGlck()
+    {
+        Gun = movement.Guns[0];
+        Gun.audioSource.PlayOneShot(reloadsGlck[1]);
+    }
+
+    void HoldGlockStart() 
+    {
+        Gun = movement.Guns[0];
+        Gun.audioSource.PlayOneShot(reloadsGlck[4]);
+    }
+
+    void HoldGlockMid()
+    {
+        Gun = movement.Guns[0];
+        Gun.audioSource.PlayOneShot(reloadsGlck[5]);
+    }
+
+    void HoldGlockEnd()
+    {
+        Gun = movement.Guns[0];
+        Gun.audioSource.PlayOneShot(reloadsGlck[5]);
     }
 
     void PullInMagAK() 
     {
-        Gun = FindObjectOfType<ProjectileGun>();
+        Gun = movement.Guns[0];
         Gun.audioSource.PlayOneShot(reloads[2]);
+    }
+
+    void PullingInMagGlck()
+    {
+        Gun = movement.Guns[0];
+        Gun.audioSource.PlayOneShot(reloadsGlck[2]);
     }
 
     void LoadBulletAK() 
     {
-        Gun = FindObjectOfType<ProjectileGun>();
+        Gun = movement.Guns[0];
         Gun.audioSource.PlayOneShot(reloads[3]);
     }
 
+    void LoadBulletGlck()
+    {
+        Gun = movement.Guns[0];
+        Gun.audioSource.PlayOneShot(reloadsGlck[3]);
+    }
+
+
     void StopReload()
     {
-        Gun = FindObjectOfType<ProjectileGun>();
+        Gun = movement.Guns[0];
         Gun.currentMagCapacity = Gun.magCapacity;
     }
 
