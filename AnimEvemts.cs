@@ -8,7 +8,7 @@ public class AnimEvemts : MonoBehaviour
     Movement movement;
     ProjectileGun Gun;
     [SerializeField]
-    GameObject Mag;
+    GameObject[] Mags;
     [SerializeField]
     GameObject SpawnPos;
     [SerializeField]
@@ -115,9 +115,18 @@ public class AnimEvemts : MonoBehaviour
    
     void DropMag()
     {
-        if (Gun.currentMagCapacity <= (Gun.magCapacity / 2))
+        GameObject newMag;
+        Gun = movement.Guns[0];
+        
+        if ((Gun.currentMagCapacity <= (Gun.magCapacity / 2)) && Gun.name == "AK")
         {
-            GameObject newMag = Instantiate(Mag);
+            newMag = Instantiate(Mags[0]);
+            newMag.transform.position = SpawnPos.transform.position;
+            Destroy(newMag, MagTimeToLive);
+        }
+        else if((Gun.currentMagCapacity <= (Gun.magCapacity / 2)) && Gun.name == "Pistol")
+        {
+            newMag = Instantiate(Mags[1]);
             newMag.transform.position = SpawnPos.transform.position;
             Destroy(newMag, MagTimeToLive);
         }

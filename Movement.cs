@@ -116,7 +116,6 @@ public class Movement : MonoBehaviour
     IEnumerator HideRounds(float time) 
     {
         yield return new WaitForSeconds(time);
-        Debug.Log(true);
         isReloaded = true;
     }
 
@@ -166,28 +165,29 @@ public class Movement : MonoBehaviour
         }
     }
 
+    // Ammo UI space
     void AnimateCheckAmmo() 
     {
         anim.SetBool("isCheckAmmo", Input.GetKeyDown(KeyCode.T));
         if(anim.GetCurrentAnimatorStateInfo(0).IsName("Check Ammo 1") || (anim.GetCurrentAnimatorStateInfo(0).IsName("Check Ammo 2")))
         {
-            if(MainGun.currentMagCapacity == MainGun.magCapacity) 
+            if(Guns[0].currentMagCapacity == Guns[0].magCapacity) 
             {
                 AmmoStatus.text = "Full";
             }
-            else if(MainGun.currentMagCapacity < MainGun.magCapacity && MainGun.currentMagCapacity > MainGun.magCapacity / 2) 
+            else if(Guns[0].currentMagCapacity < Guns[0].magCapacity && Guns[0].currentMagCapacity > Guns[0].magCapacity / 2) 
             {
                 AmmoStatus.text = "Nearly full";
             }
-            else if(MainGun.currentMagCapacity == MainGun.magCapacity / 2) 
+            else if(Guns[0].currentMagCapacity == Guns[0].magCapacity / 2) 
             {
                 AmmoStatus.text = "Half-full";
             }
-            else if(MainGun.currentMagCapacity < MainGun.magCapacity / 2 && MainGun.currentMagCapacity > 0) 
+            else if(Guns[0].currentMagCapacity < Guns[0].magCapacity / 2 && Guns[0].currentMagCapacity > 0) 
             {
                 AmmoStatus.text = "Nearly empty";
             }
-            else if(MainGun.currentMagCapacity == 0) 
+            else if(Guns[0].currentMagCapacity == 0) 
             {
                 AmmoStatus.text = "Empty";
             }
@@ -207,24 +207,24 @@ public class Movement : MonoBehaviour
         switch (Guns[0].name) 
         {
             case "AK":
-                if (MainGun.currentMagCapacity > MainGun.magCapacity / 2 || isReloaded == false)
+                if (Guns[0].currentMagCapacity > Guns[0].magCapacity / 2 || isReloaded == false)
                 {
                     magBullets[0].SetActive(true);
-                    magBullets[1].SetActive(true);
                 }
-                else if (MainGun.currentMagCapacity <= MainGun.magCapacity / 2 && MainGun.currentMagCapacity > 0)
+                else if (Guns[0].currentMagCapacity == 0)
                 {
                     magBullets[0].SetActive(false);
-                    magBullets[1].SetActive(true);
-                }
-                else if (MainGun.currentMagCapacity == 0)
-                {
-                    magBullets[0].SetActive(false);
-                    magBullets[1].SetActive(false);
                 }
                 break;
             case "Pistol":
-                magBullets[1].SetActive(false);
+                if (Guns[0].currentMagCapacity > Guns[0].magCapacity / 2 || isReloaded == false)
+                {
+                    magBullets[1].SetActive(true);
+                }
+                else if (Guns[0].currentMagCapacity == 0)
+                {
+                    magBullets[1].SetActive(false);
+                }
                 break;
         }
     }
@@ -276,8 +276,8 @@ public class Movement : MonoBehaviour
     }
     void Update()
     {
-        float x = Input.GetAxisRaw("Horizontal");
-        float z = Input.GetAxisRaw("Vertical");
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
 
         Vector3 move = transform.right * x + transform.forward * z;
 
